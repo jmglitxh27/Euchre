@@ -16,6 +16,7 @@ class Deck:
         self.game = game
 
     # Creates the actual deck
+    # Returns:  self.deck: Card object array
     def create_deck(self):
         if self.game.lower() == "euchre":
             suits = ["Clubs", "Diamonds", "Spades", "Hearts"]
@@ -71,18 +72,49 @@ class Deck:
         return deck1, deck2, deck3, deck4, anti_card_count
         
             
-    # Used to print out all the user's cards
-    def reveal_cards(self):
-        count = 1
+    # Used to put player's card into a list. Can be displayed.
+    # Args:  show: boolean
+    # Returns:  list: Card object
+    def reveal_cards(self, show):
+        list = []
         for card in self.deck:
-            suit, value = card.show_card()
-            print(f"{count}. {suit}\t{value}")
-            count+=1
+            list.append(card)
+            if show:
+                print(card.show_card())
+        return list
 
     # Allows user to put down a card and discards it from deck
-    def place_card(self, index):
+    # Args: index: int, place: boolean
+    # Returns: temp_card: Card object
+    def place_card(self, index, place):
         try:
-            print(self.deck[index].show_card())
-            self.deck.pop(index)
+            # Returns Card type
+            temp_card = self.deck[index]
+            if place:
+                self.deck.pop(index)
+            return temp_card
+            
         except Exception as e:
             print(e.args[0])
+
+    # Args:  player_card_index: int, other_deck: Deck object, other_card_index: int
+    def swap_card(self, player_card_index, other_deck, other_card_index):
+        # Removes card from user's deck and puts into temp
+        player_card = self.place_card(player_card_index, True)
+        # Removes card from other user's deck and puts into temp
+        other_card = other_deck.place_card(other_card_index, True)
+        
+        # Add other card to player deck and vise versa
+        player_suit, player_value = player_card.show_card()
+        other_suit, other_value = other_card.show_card()
+        print(f"Player dropped: {player_suit} {player_value}") 
+        print(f"Player added: {other_suit} {other_value}")
+        self.add_card(other_card)
+        other_deck.add_card(player_card)
+        
+
+        
+        
+
+
+    
